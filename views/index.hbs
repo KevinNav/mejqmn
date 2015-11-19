@@ -1,2 +1,37 @@
-<h1>{{title}}</h1>
-<p>Welcome to {{title}}</p>
+<div data-role="page" id="page1">
+  <div data-role="header">
+    <h1>Page header (optional): Example page</h1>
+  </div>
+  <div role="main" class="ui-content">
+    <h2>Page content</h2>
+    <p>Page content goes here.
+    <a href="#page2">Go to page 2</a></p>
+  </div>
+  <div data-role="footer">
+      <div data-role="navbar">
+      <ul>
+        <li><a href="#page1">Home</a></li>
+        <li><a href="#page2">Two</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+<div data-role="page" id="page2">
+  <div data-role="header">
+    <h1>Page header (optional): Example page</h1>
+  </div>
+  <div role="main" class="ui-content">
+    <h2>Page content</h2>
+    <p>Page content goes here.
+<a href="#page1">Go To PAge 1</a>
+    </p>
+  </div>
+  <div data-role="footer">
+      <div data-role="navbar">
+      <ul>
+        <li><a href="#page1">Home</a></li>
+        <li><a href="#page2">Two</a></li>
+      </ul>
+    </div>
+  </div>
+</div>

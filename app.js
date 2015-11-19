@@ -5,8 +5,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 
-var routes = require('./routes/index');
-var users = require('./routes/users');
+//var routes = require('./routes/index');
+//var users = require('./routes/users');
 
 var app = express();
 
@@ -24,8 +24,13 @@ function getApp(db){
     app.use(require('less-middleware')(path.join(__dirname, 'public')));
     app.use(express.static(path.join(__dirname, 'public')));
 
-    app.use('/', routes);
-    app.use('/users', users);
+    app.get('/',function(req, res){
+        res.render("index",{});
+    });
+    //app.use('/', routes);
+    //app.use('/users', users);
+    var apiRoutes = require("./routes/api")(db);
+    app.use('/api', apiRoutes);
 
     console.log("Conected To DB" + db.databaseName);
     // catch 404 and forward to error handler

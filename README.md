@@ -10,7 +10,7 @@
 
 ## Pasos para adecuar el proyecto para conectarse a MongoDB
 1. Crear el proyecto
-   ```
+   ```bash
    express --git --css less --hbs mejqmn
    cd mejqmn
    npm install
@@ -80,3 +80,62 @@ https://jquerymobile.com
 4. Copiar en la carpeta ```public/stylesheets``` de su proyecto los siguientes archivo de la carpeta descomprimida
    * ```jquery.mobile.x.x.x/demos/css/themes/default/jquery.mobile-x.x.x.min.css```
 5. Subir a la máquina virtual la carpeta public.
+
+## Creando Ruta para las entradas API de la aplicación
+1. En la carpeta ```routes``` crear un archivo api.js
+2. Editar el archivo agregando la siguientes lineas
+   ```javascript
+   var express = require('express');
+   var router = express.Router();
+
+   function getApi(db){
+       router.get('/test', function(req, res) {
+         res.status(500).json({"error":"No Implementado"});
+       });
+
+       return router;
+   }
+
+   module.exports = getApi;
+   ```
+3. Modificar el archivo ```app.js``` para incluir la ruta bajo la ruta api
+   ```javascript
+   ...
+   app.use('/', routes);
+   app.use('/users', users);
+
+   console.log("Conected To DB" + db.databaseName);
+   var apiRoute = require('/routes/api')(db);              //<--
+   app.use('/api', apiRoute);                              //<--
+
+   ...
+   ```
+
+## Insertando un Documento en MongoDB por medio de la API
+
+1. Modifique el archivo ```routes/api.js``` con
+   ```javascript
+   ...
+   function getApi(db){
+       router.get('/test', function(req, res) {
+         res.status(500).json({"error":"No Implementado"});
+       });
+
+       var coleccion = db.colection('nombreColeccion');
+
+        router.post('/insertarAColeccion', function(req,res){
+            var documento = {
+                "dato1": req.body.dato1,
+                "dato2": req.body.dato2
+            };
+            coleccion.insertOne(documento, funtion(err,result){
+                if(err){
+                    req.status(500).json({"error":err});
+                }else{
+                    req.status(200).json("resultado":result);
+                }
+            });
+        });
+    ...
+   ```
+2. En POSTMAN de Google Chrome puede establecer probar la api de insertado.
