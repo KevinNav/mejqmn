@@ -101,28 +101,34 @@ https://jquerymobile.com
 3. Modificar el archivo ```app.js``` para incluir la ruta bajo la ruta api
    ```javascript
    ...
-   app.use('/', routes);
-   app.use('/users', users);
+   //var routes = require('./routes/index');                <--
+   //var users = require('./routes/users');                 <--
+
+   var app = express();
+   ...
+   //app.use('/', routes);                                  <--
+   //app.use('/users', users);                              <--
 
    console.log("Conected To DB" + db.databaseName);
+   app.get('/',function(req,res){                           //<--
+       res.render("index",{});                              //<--
+   });                                                      //<--
    var apiRoute = require('/routes/api')(db);              //<--
    app.use('/api', apiRoute);                              //<--
 
    ...
    ```
 
-## Insertando un Documento en MongoDB por medio de la API
+## Insertando un Documento y Obteniendo Documentos de MongoDB por medio de la API
 
 1. Modifique el archivo ```routes/api.js``` con
    ```javascript
    ...
    function getApi(db){
-       router.get('/test', function(req, res) {
-         res.status(500).json({"error":"No Implementado"});
-       });
-
-       var coleccion = db.colection('nombreColeccion');
-
+        var coleccion = db.colection('nombreColeccion');
+        router.get('/test', function(req, res) {
+            res.status(500).json({"error":"No Implementado"});
+        });
         router.post('/insertarAColeccion', function(req,res){
             var documento = {
                 "dato1": req.body.dato1,
@@ -130,12 +136,61 @@ https://jquerymobile.com
             };
             coleccion.insertOne(documento, funtion(err,result){
                 if(err){
-                    req.status(500).json({"error":err});
+                    res.status(500).json({"error":err});
                 }else{
-                    req.status(200).json("resultado":result);
+                    res.status(200).json("resultado":result);
+                }
+            });
+        });
+        router.get('/obtenerColeccion',function(req,res){
+            coleccion.find({}).toArray(function(err,docs){
+                if(err){
+                    res.status(500).json({error:err});
+                }else{
+                    res.status(200).json(docs);
                 }
             });
         });
     ...
    ```
-2. En POSTMAN de Google Chrome puede establecer probar la api de insertado.
+2. En POSTMAN de Google Chrome puede establecer las entradas para probar la api de insertado y de busqueda.
+
+## Layout y Vista para JQuery Mobile
+1. Modifique el archivo ```layout.hbs``` para que quede de la siguiente forma:
+   ```html
+   <!DOCTYPE html>
+   <html>
+   <head>
+     <meta charset="utf-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1">
+     <title>{{PageTitle}}</title>
+     <link rel="stylesheet" href="/stylesheets/jquery.mobile-1.4.5.min.css">
+     <script src="/javascripts/jquery.min.js"></script>
+     <script src="/javascripts/jquery.mobile-1.4.5.min.js"></script>
+   </head>
+   <body>
+    {{{body}}}
+   </body>
+   </html>
+   ```
+2. Modifique el archivo ```index.hbs``` para que su contenido sea similar a:
+   ```html
+   <div data-role="page" id="page1" data-position="fixed">
+     <div data-role="header">
+       <h1>Encabezado</h1>
+     </div>
+     <div role="main" class="ui-content">
+       <h2>Contenido</h2>
+       <p>Contenido de Página 1
+       </p>
+     </div>
+     <div data-role="footer"  data-position="fixed">
+         <div data-role="navbar">
+         <ul>
+           <li><a href="#page1">Home</a></li>
+           <li><a href="#page2">Two</a></li>
+         </ul>
+       </div>
+     </div>
+   </div>
+   ```
