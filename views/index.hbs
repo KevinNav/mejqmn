@@ -1,37 +1,55 @@
-<div data-role="page" id="page1">
-  <div data-role="header" data-position="fixed">
-    <h1>Page header (optional): Example page</h1>
-  </div>
-  <div role="main" class="ui-content">
-    <h2>Page content</h2>
-    <p>Page content goes here.
-    <a href="#page2">Go to page 2</a></p>
-  </div>
-  <div data-role="footer" data-position="fixed">
-      <div data-role="navbar">
-      <ul>
-        <li><a href="#page1">Home</a></li>
-        <li><a href="#page2">Two</a></li>
-      </ul>
+<div data-role="page" id="backlog">
+    <div data-role="header" data-position="fixed">
+        <h1>Backlogs</h1>
     </div>
-  </div>
+    <div role="main" class="ui-content">
+        <div id="backlog_container">
+            
+        </div>
+    </div>
+    <div data-role="footer" data-position="fixed">
+        <div data-role="navbar">
+            <ul>
+                <li><a href="#backlog">Backlog</a></li>
+                <li><a href="#newbacklog">New</a></li>
+            </ul>
+        </div>
+    </div>
 </div>
-<div data-role="page" id="page2">
-  <div data-role="header" data-position="fixed">
-    <h1>Page header (optional): Example page</h1>
-  </div>
-  <div role="main" class="ui-content">
-    <h2>Page content</h2>
-    <p>Page content goes here.
-<a href="#page1">Go To PAge 1</a>
-    </p>
-  </div>
-  <div data-role="footer" data-position="fixed">
-      <div data-role="navbar">
-      <ul>
-        <li><a href="#page1">Home</a></li>
-        <li><a href="#page2">Two</a></li>
-      </ul>
+
+<div data-role="page" id="newbacklog">
+    <div data-role="header" data-position="fixed">
+        <h1>New Backlog</h1>
     </div>
-  </div>
+    <div role="main" class="ui-content">
+        <form id="newbacklog_form">
+            <div class="ui-field-contain">
+                <label for="code">Story Code</label>
+                <input type="text" name="code" id="code"
+                    placeholder="Story Code" />
+                <br/>
+                <label for="description">Story</label>
+                <textarea rows=8 cols=40 name="description"
+                id="description" placeholder="Story"></textarea>
+                <br/>
+                <label for="owner">Owner</label>
+                <input type="email" name="owner" id="owner"
+                    placeholder="Owner Email" />
+                <br/>
+                <label for="storypoints">Story Points</label>
+                <input type="range" name="storypoints" id="storypoints"
+                    value=1 min=1 max=10 step=1 />
+                <br/>
+                <button id="btnNewStory">Submit Story</button>
+            </div>
+        </form>
+    </div>
+    <div data-role="footer" data-position="fixed">
+        <div data-role="navbar">
+            <ul>
+                <li><a href="#backlog">Backlog</a></li>
+                <li><a href="#newbacklog">New</a></li>
+            </ul>
+        </div>
+    </div>
 </div>

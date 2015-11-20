@@ -9,7 +9,7 @@ function getAPIRoutes(db){
       res.status(500).json({"error":"No Implementado"});
     });
 
-    router.get('/getorphanbacklog', function(req, res) {
+    router.get('/getbacklog', function(req, res) {
       product_backlog.find({}).toArray(function(err, docs){
           res.status(200).json(docs);
       });
