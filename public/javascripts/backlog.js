@@ -7,10 +7,14 @@ $(document).on("pagecontainerbeforeshow", function(e,ui){
             break;
         case "newbacklog":
             //....
+            if(!newbacklogBinded){
+                newbacklogBinded = true;
+                $("#btnNewStory").on("click", btnNewStory_onclicked);
+            }
             break;
     }
 });
-
+var newbacklogBinded = false;
 function load_backlog_data(backlog_page){
     $.get(
         "/api/getbacklog",
@@ -20,7 +24,7 @@ function load_backlog_data(backlog_page){
                 var htmlstr = '<ul>';
                 for(var i = 0 ; i < docs.length ; i++){
                     var backlogitem = docs[i];
-                    htmlstr += '<li><a href data-id="'+backlogitem._id+'">'+backlogitem.description+'</a></li>';
+                    htmlstr += '<li><a href="#backlogdetail" data-id="'+backlogitem._id+'">'+backlogitem.description+'</a></li>';
                 }
                 htmlstr += '</ul>';
                 $(backlog_page)
@@ -32,4 +36,36 @@ function load_backlog_data(backlog_page){
         },
         "json"
     );
+}
+
+function btnNewStory_onclicked(e){
+    e.preventDefault();
+    e.stopPropagation();
+    //Primer obtener los datos del formulario
+    var formValuesArray = $("#newbacklog_form").serializeArray();
+    var formObject = {};
+    for(var i = 0; i< formValuesArray.length;i++){
+        formObject[formValuesArray[i].name] = formValuesArray[i].value;
+    }
+    $.post(
+        "api/addtobacklog",
+        formObject,
+        function(data,sucess,xhr){
+            if(data.resultado.ok){
+                $("#newbacklog_form").get()[0].reset();
+                alert("Historia Ingresada!");
+                chage_page("backlog");
+            }else{
+                alert("Error al Insertar!");
+            }
+        },
+        "json"
+    ).fail(function(xhr,failtxt,data){
+        alert("Error al Insertar!");
+    });
+}
+
+// Funcion para cambiar de pagina
+function chage_page(to){
+    $(":mobile-pagecontainer").pagecontainer("change", "#" + to);
 }
