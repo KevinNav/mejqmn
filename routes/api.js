@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var ObjectID = require('mongodb').ObjectID;
 
 
 function getAPIRoutes(db){
@@ -27,6 +28,17 @@ function getAPIRoutes(db){
                 res.status(500).json({error:err});
             }else{
                 res.status(200).json({resultado:result});
+            }
+        });
+    });
+
+    router.get("/getOneBacklog/:backlogId", function(req,res){
+        var query = {_id: new ObjectID(req.params.backlogId)};
+        product_backlog.findOne(query,function(err, doc){
+            if(err){
+                res.status(500).json({"error":"Error al extraer el Backlog"});
+            }else{
+                res.status(200).json(doc);
             }
         });
     });

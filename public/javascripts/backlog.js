@@ -12,9 +12,15 @@ $(document).on("pagecontainerbeforeshow", function(e,ui){
                 $("#btnNewStory").on("click", btnNewStory_onclicked);
             }
             break;
+        case "backlogdetail":
+            if(selectedBacklogItemID!==""){
+                load_backlogitem_data(ui.toPage);
+            }
+            break;
     }
 });
 var newbacklogBinded = false;
+var selectedBacklogItemID = "";
 function load_backlog_data(backlog_page){
     $.get(
         "/api/getbacklog",
@@ -31,10 +37,36 @@ function load_backlog_data(backlog_page){
                     .find("#backlog_container")
                     .html(htmlstr)
                     .find("ul")
-                    .listview();
+                    .listview()
+                    .find("a")
+                    .click(function(e){
+                        selectedBacklogItemID = $(this).data("id");
+                    })
+                    ;
             }
         },
         "json"
+    );
+}
+
+function load_backlogitem_data(backlogitem_page){
+    $.get(
+        "/api/getOneBacklog/" + selectedBacklogItemID,
+        {},
+        function(doc, status, xhr){
+            var html = $(backlogitem_page).find(".ui-content").html();
+            var htmlObj  = $(html);
+            for (var i in doc) {
+                htmlObj.find("#d_" + i).html(doc[i]);
+            }
+            $(backlogitem_page).find(".ui-content").html(htmlObj);
+        },
+        "json"
+    ).fail(
+        function(xhr, status, doc){
+            console.log(doc);
+            chage_page("backlog");
+        }
     );
 }
 
