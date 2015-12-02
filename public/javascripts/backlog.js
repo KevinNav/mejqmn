@@ -1,8 +1,28 @@
-var newbacklogBinded = false;
+var newbacklogBinded = false, uploadBtnBinded = false, btnloginBinded = false, btnRegisterBinded = false;
 var selectedBacklogItemID = "";
-var uploadBtnBinded = false;
-var content, html;
+var content, html, picFile;
 
+
+$(document).on("mobileinit", function(e){
+    $.ajaxSetup({
+        xhrFields:{
+            withCredentials:true
+        }
+    });
+});
+$(document).ajaxError(function(e, xhr, set, err){
+    if(xhr.status===403){
+        change_page("login");
+    }
+});
+/*
+Con el evento pagebeforechange se puede obtener a qué página se está
+dirigiendo y tener control sobre el flujo. En este evento se puede
+controlar el acceso a las pantallas:
+1) Si no está logueado cambiar la página a otra
+2) Si no está seteado la variable de consulta regresar a la lista de
+   consulta.
+*/
 $(document).on("pagebeforechange", function(e, data) {
     if (typeof data.toPage === "object") {
         var pageid = data.toPage.attr("id");
@@ -44,6 +64,18 @@ $(document).on("pagecontainerbeforeshow", function(e, ui) {
                 uploadBtnBinded = true;
                 $("#userpic").on("change", userpic_onchange);
                 $("#btnUploadPic").on("click", btnUpload_onClicked);
+            }
+            break;
+        case "login":
+            if(!btnloginBinded){
+                btnloginBinded = true;
+                $("#btnLgnIn").on("click", btnLgnIn_onclick);
+            }
+            break;
+        case "register":
+            if(!btnRegisterBinded){
+                btnRegisterBinded = true;
+                $("#btnRegLgn").on("click", btnRegLgn_onclick);
             }
             break;
     }
@@ -130,8 +162,6 @@ function btnNewStory_onclicked(e) {
     });
 }
 
-var picFile;
-
 function userpic_onchange(e) {
     picFile = e.target.files;
 }
@@ -154,6 +184,7 @@ function btnUpload_onClicked(e) {
             processData: false,
             contentType: false,
             success: function(data, success, xhr) {
+                $("#frm_upload").get()[0].reset();
                 change_page("backlogdetail");
             },
             error: function(xhr, fail, data) {
@@ -163,6 +194,46 @@ function btnUpload_onClicked(e) {
     } else {
         alert("Must select an evidence file!");
     }
+}
+
+function btnLgnIn_onclick(e){
+    e.preventDefault();
+    e.stopPropagation();
+    var formValuesArray = $("#frm_login").serializeArray();
+    var formObject = {};
+    for (var i = 0; i < formValuesArray.length; i++) {
+        formObject[formValuesArray[i].name] = formValuesArray[i].value;
+    }
+    $.post("api/login",
+        formObject,
+        function(data,success,xhr){
+            $("#frm_login").get()[0].reset();
+            change_page("backlog");
+        },
+        "json"
+    ).fail(function(xhr,fail,data){
+        alert("Log In Failed! Try Again");
+    });
+}
+
+function btnRegLgn_onclick(e){
+    e.preventDefault();
+    e.stopPropagation();
+    var formValuesArray = $("#frm_register").serializeArray();
+    var formObject = {};
+    for (var i = 0; i < formValuesArray.length; i++) {
+        formObject[formValuesArray[i].name] = formValuesArray[i].value;
+    }
+    $.post("api/register",
+        formObject,
+        function(data,success,xhr){
+            $("#frm_register").get()[0].reset();
+            change_page("login");
+        },
+        "json"
+    ).fail(function(xhr,fail,data){
+        alert("Sign Up Failed! Try Again");
+    });
 }
 
 // Funcion para cambiar de pagina

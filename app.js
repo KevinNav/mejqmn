@@ -2,9 +2,9 @@ var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-var cookieParser = require('cookie-parser');
+//var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var session = require('express-session');
 //var routes = require('./routes/index');
 //var users = require('./routes/users');
 
@@ -20,13 +20,16 @@ function getApp(db){
     app.use(logger('dev'));
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
-    app.use(cookieParser());
+    //app.use(cookieParser());
     app.use(require('less-middleware')(path.join(__dirname, 'public')));
     app.use(express.static(path.join(__dirname, 'public')));
+
+    app.use(session({ secret: 'justanotherpbtool',resave:true,saveUninitialized:true, cookie: { maxAge: null }}));
 
     app.get('/',function(req, res){
         res.render("index",{});
     });
+
     //app.use('/', routes);
     //app.use('/users', users);
     var apiRoutes = require("./routes/api")(db);
