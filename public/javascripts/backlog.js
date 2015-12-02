@@ -4,12 +4,16 @@ var content, html, picFile;
 
 
 $(document).on("mobileinit", function(e){
+    $.mobile.loader.prototype.options.text = "Please Wait";
+    $.mobile.loader.prototype.options.textVisible = true;
+
     $.ajaxSetup({
         xhrFields:{
             withCredentials:true
         }
     });
 });
+
 $(document).ajaxError(function(e, xhr, set, err){
     if(xhr.status===403){
         change_page("login");
@@ -82,9 +86,11 @@ $(document).on("pagecontainerbeforeshow", function(e, ui) {
 });
 
 function load_backlog_data(backlog_page) {
+    showLoading();
     $.get(
         "/api/getbacklog", {},
         function(docs, success, xhr) {
+
             if (docs) {
                 var htmlstr = '<ul>';
                 for (var i = 0; i < docs.length; i++) {
@@ -102,12 +108,14 @@ function load_backlog_data(backlog_page) {
                         selectedBacklogItemID = $(this).data("id");
                     });
             }
+            hideLoading();
         },
         "json"
     );
 }
 
 function load_backlogitem_data(backlogitem_page) {
+    showLoading();
     $.get(
         "/api/getOneBacklog/" + selectedBacklogItemID, {},
         function(doc, status, xhr) {
@@ -126,10 +134,12 @@ function load_backlogitem_data(backlogitem_page) {
                 }
             }
             content.html(htmlObj);
+            hideLoading();
         },
         "json"
     ).fail(
         function(xhr, status, doc) {
+            hideLoading();
             change_page("backlog");
         }
     );
@@ -144,10 +154,12 @@ function btnNewStory_onclicked(e) {
     for (var i = 0; i < formValuesArray.length; i++) {
         formObject[formValuesArray[i].name] = formValuesArray[i].value;
     }
+    showLoading();
     $.post(
         "api/addtobacklog",
         formObject,
         function(data, sucess, xhr) {
+            hideLoading();
             if (data.resultado.ok) {
                 $("#newbacklog_form").get()[0].reset();
                 alert("Historia Ingresada!");
@@ -158,12 +170,17 @@ function btnNewStory_onclicked(e) {
         },
         "json"
     ).fail(function(xhr, failtxt, data) {
+        hideLoading();
         alert("Error al Insertar!");
     });
 }
 
 function userpic_onchange(e) {
     picFile = e.target.files;
+    var htmlstr = "";
+    htmlstr += "<span><b>Size:</b> ~" + Math.ceil(picFile[0].size / 1024) + "kb </span><br/>";
+    htmlstr += "<span><b>Type:</b> " + picFile[0].type + " </span><br/>";
+    $("#picMsg").html(htmlstr);
 }
 
 function btnUpload_onClicked(e) {
@@ -175,6 +192,7 @@ function btnUpload_onClicked(e) {
             formBody.append("userpic", valor);
         });
         formBody.append("backlogid", selectedBacklogItemID);
+        showLoading();
         $.ajax({
             url: "api/upload",
             type: "POST",
@@ -185,9 +203,11 @@ function btnUpload_onClicked(e) {
             contentType: false,
             success: function(data, success, xhr) {
                 $("#frm_upload").get()[0].reset();
+                hideLoading();
                 change_page("backlogdetail");
             },
             error: function(xhr, fail, data) {
+                hideLoading();
                 alert("Error while uploading evidence file. Try again latter!");
             }
         });
@@ -239,4 +259,11 @@ function btnRegLgn_onclick(e){
 // Funcion para cambiar de pagina
 function change_page(to) {
     $(":mobile-pagecontainer").pagecontainer("change", "#" + to);
+}
+
+function showLoading(){
+    $.mobile.loading( 'show');
+}
+function hideLoading(){
+    $.mobile.loading( 'hide');
 }
