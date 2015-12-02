@@ -6,7 +6,7 @@ var multer = require('multer');
 var regexpt = /^((image)|(video))\/\w*$/i;
 var upload = multer({dest:"public/img/",
                      limits:{
-                         fileSize: (1024 * 1024 * 5)
+                         fileSize: (1024 * 1024 * 10)
                      },
                      fileFilter: function(req, file, cb){
                          if(regexpt.test(file.mimetype)){
