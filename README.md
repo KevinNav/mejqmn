@@ -10,14 +10,17 @@
 
 ## Pasos para adecuar el proyecto para conectarse a MongoDB
 1. Crear el proyecto
+
    ```bash
    express --git --css less --hbs mejqmn
    cd mejqmn
    npm install
    npm install mongodb --save
    ```
+
 2. Sincronizar carpeta a máquina local.
 3. Modificar archivo bin/www
+
    ```javascript
     // /bin/www.js
     ...
@@ -39,6 +42,7 @@
     });// MongoClient.connect                           <--
    ```
 4. Modificar archivo app.js
+
    ```javascript
    // app.js
    ...
@@ -84,6 +88,7 @@ https://jquerymobile.com
 ## Creando Ruta para las entradas API de la aplicación
 1. En la carpeta ```routes``` crear un archivo api.js
 2. Editar el archivo agregando la siguientes lineas
+
    ```javascript
    var express = require('express');
    var router = express.Router();
@@ -98,7 +103,9 @@ https://jquerymobile.com
 
    module.exports = getApi;
    ```
+
 3. Modificar el archivo ```app.js``` para incluir la ruta bajo la ruta api
+
    ```javascript
    ...
    //var routes = require('./routes/index');                <--
@@ -122,6 +129,7 @@ https://jquerymobile.com
 ## Insertando un Documento y Obteniendo Documentos de MongoDB por medio de la API
 
 1. Modifique el archivo ```routes/api.js``` con
+
    ```javascript
    ...
    function getApi(db){
