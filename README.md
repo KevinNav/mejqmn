@@ -161,6 +161,7 @@ https://jquerymobile.com
         });
     ...
    ```
+   
 2. En POSTMAN de Google Chrome puede establecer las entradas para probar la api de insertado y de busqueda.
 
 ## Layout y Vista para JQuery Mobile
