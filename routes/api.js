@@ -1,6 +1,20 @@
 var express = require('express');
 var router = express.Router();
 var ObjectID = require('mongodb').ObjectID;
+var multer = require('multer');
+var upload = multer({dest:"public/img/",
+                     limits:{
+                         fileSize: (1024 * 1024 * 5)
+                     },
+                     fileFilter: function(req, file, cb){
+                         if(file.mimetype === "image/jpeg"){
+                             cb(null, true);
+                         }else{
+                             cb(null, false);
+                         }
+                     }
+
+                 });
 
 
 function getAPIRoutes(db){
@@ -43,6 +57,25 @@ function getAPIRoutes(db){
         });
     });
 
+    router.post("/upload",
+                upload.single('userpic'),
+                function(req,res){
+                        console.log(req.file);
+                        console.log(req.body);
+                        var query = {_id: new ObjectID(req.body.backlogid)};
+                        product_backlog.updateOne(
+                            query,
+                            {"$push":{"evidences":("img/" + req.file.filename)}},
+                            {w:1},
+                            function(err,result){
+                                if(err){
+                                    res.status(500).json({"error":err});
+                                }else{
+                                    res.status(200).json({"path":("img/"+req.file.filename)});
+                                }
+                            }
+                        );
+                });
     return router;
 } //getAPIRoutes
 

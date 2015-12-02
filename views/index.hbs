@@ -59,25 +59,41 @@
         <h1>Backlog Story</h1>
     </div>
     <div role="main" class="ui-content">
-            <div class="ui-field-contain">
-                <label for="code">Story Code</label>
-                <div id="d_code">
+            <div>
+                <div class="label">Story Code</div>
+                <div class="valHld" id="d_code">&nbsp;</div>
+                <div class="label">Story</div>
+                <div class="valHld" id="d_description">&nbsp;</div>
+                <div class="label">Owner</div>
+                <div class="valHld" id="d_owner">&nbsp;</div>
+                <div class="label">Story Points</div>
+                <div class="valHld" id="d_storyPoints">&nbsp;</div>
 
-                </div>
-                <label for="description">Story</label>
-                <div id="d_description">
-
-                </div>
-                <label for="owner">Owner</label>
-                <div id="d_owner">
-
-                </div>
-
-                <label for="storypoints">Story Points</label>
-                <div id="d_storyPoints">
-
-                </div>
+                <a href="#picUpload" data-role="button">Add Evidence</a>
             </div>
+    </div>
+    <div data-role="footer" data-position="fixed">
+        <div data-role="navbar">
+            <ul>
+                <li><a href="#backlog">Backlog</a></li>
+                <li><a href="#newbacklog">New</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+<div data-role="page" id="picUpload">
+    <div data-role="header" data-position="fixed">
+        <h1>Upload Pic</h1>
+    </div>
+    <div role="main" class="ui-content">
+        <div class="ui-field-contain">
+            <h4>Add Evidence File</h4>
+            <input type="file" name="userpic" id="userpic"/>
+            <br/>
+            <button id="btnUploadPic">Upload</button>
+        </div>
     </div>
     <div data-role="footer" data-position="fixed">
         <div data-role="navbar">
