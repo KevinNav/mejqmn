@@ -167,10 +167,11 @@ function getAPIRoutes(db){
             if(err){
                 res.status(500).json({"error":"Cannot delete Backlog"});
             }else{
-                console.log(docs);
-                for(var k = 0; k < docs.value.evidences.length; k++){
-                    var deleteimg = path.join(__dirname, '../public/'+docs.value.evidences[k]);
-                    fs.unlink(deleteimg, function(err){ console.log(err);});
+                if(docs.value.evidence){
+                    for(var k = 0; k < docs.value.evidences.length; k++){
+                        var deleteimg = path.join(__dirname, '../public/'+docs.value.evidences[k]);
+                        fs.unlink(deleteimg, function(err){ console.log(err);});
+                    }
                 }
                 res.status(200).json({"result":docs});
             }
