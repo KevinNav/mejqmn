@@ -157,7 +157,8 @@ https://jquerymobile.com
 
 ## Layout y Vista para JQuery Mobile
 1. Modifique el archivo ```layout.hbs``` para que quede de la siguiente forma:
-   ```html
+
+   ```HTML
    <!DOCTYPE html>
    <html>
    <head>
@@ -174,7 +175,8 @@ https://jquerymobile.com
    </html>
    ```
 2. Modifique el archivo ```index.hbs``` para que su contenido sea similar a:
-   ```html
+
+   ```HTML
    <div data-role="page" id="page1" data-position="fixed">
      <div data-role="header">
        <h1>Encabezado</h1>
