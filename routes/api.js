@@ -1,9 +1,11 @@
 var express = require('express');
+var path = require('path');
 var router = express.Router();
 var ObjectID = require('mongodb').ObjectID;
 var md5 = require('md5');
 var multer = require('multer');
 var regexpt = /^((image)|(video))\/\w*$/i;
+var fs = require('fs');
 var upload = multer({dest:"public/img/",
                      limits:{
                          fileSize: (1024 * 1024 * 10)
@@ -159,6 +161,21 @@ function getAPIRoutes(db){
                         }
                 });
 
+    router.delete("/delete/:backlogid", function(req,res){
+        var query = {_id: new ObjectID(req.params.backlogid)};
+        product_backlog.findOneAndDelete(query,{projection:{evidences:1}} ,function(err,docs){
+            if(err){
+                res.status(500).json({"error":"Cannot delete Backlog"});
+            }else{
+                console.log(docs);
+                for(var k = 0; k < docs.value.evidences.length; k++){
+                    var deleteimg = path.join(__dirname, '../public/'+docs.value.evidences[k]);
+                    fs.unlink(deleteimg, function(err){ console.log(err);});
+                }
+                res.status(200).json({"result":docs});
+            }
+        });
+    });
 
     return router;
 } //getAPIRoutes

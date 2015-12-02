@@ -1,4 +1,5 @@
-var newbacklogBinded = false, uploadBtnBinded = false, btnloginBinded = false, btnRegisterBinded = false;
+var newbacklogBinded = false, uploadBtnBinded = false, btnloginBinded = false,
+    btnRegisterBinded = false, btnDeleteBinded = false;
 var selectedBacklogItemID = "";
 var content, html, picFile;
 
@@ -69,6 +70,7 @@ $(document).on("pagecontainerbeforeshow", function(e, ui) {
                 $("#userpic").on("change", userpic_onchange);
                 $("#btnUploadPic").on("click", btnUpload_onClicked);
             }
+            $("#picMsg").html("");
             break;
         case "login":
             if(!btnloginBinded){
@@ -133,7 +135,7 @@ function load_backlogitem_data(backlogitem_page) {
                     htmlObj.append('<div><img src="'+doc.evidences[k]+'" /></div>');
                 }
             }
-            content.html(htmlObj);
+            content.html(htmlObj).find("#btnDelete").on("click", btnDelete_onclick);
             hideLoading();
         },
         "json"
@@ -256,6 +258,25 @@ function btnRegLgn_onclick(e){
     });
 }
 
+function btnDelete_onclick(e){
+    e.preventDefault();
+    e.stopPropagation();
+    showLoading();
+    $.ajax({
+        url:"api/delete/" + selectedBacklogItemID,
+        type:"DELETE",
+        dataType:'json',
+        success: function(data,success,xhr){
+            hideLoading();
+            alert("Story deleted!");
+            change_page("backlog");
+        },
+        error: function(xhr, error, data){
+            hideLoading();
+            alert("Error trying to delete Story.");
+        }
+    });
+}
 // Funcion para cambiar de pagina
 function change_page(to) {
     $(":mobile-pagecontainer").pagecontainer("change", "#" + to);
