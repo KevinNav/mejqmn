@@ -61,27 +61,30 @@ function getAPIRoutes(db){
             if(err){
                 res.status(401).json({"error":"Log In Failed"});
             }else{
-                var saltedPassword="";
-                if(doc.created%2 ===0){
-                    saltedPassword = doc.user.substring(0,3) + password;
+                if(doc){
+                    var saltedPassword="";
+                    if(doc.created%2 ===0){
+                        saltedPassword = doc.user.substring(0,3) + password;
+                    }else{
+                        saltedPassword = password + doc.user.substring(0,3);
+                    }
+                    if(doc.password === md5(saltedPassword)){
+                        req.session.user = doc.user;
+                        doc.password = "";
+                        req.session.userDoc = doc;
+                        users.updateOne({"_id":doc._id}, {"$set":{"lastlogin":Date.now(),"failedTries":0}});
+                        res.status(200).json({"ok":true});
+                    }else{
+                        req.session.user = "";
+                        req.session.userDoc = {};
+                        users.updateOne({"_id":doc._id}, {"$ic":{"failedTries":1}});
+                        res.status(401).json({"error":"Log In Failed"});
+                    }
                 }else{
-                    saltedPassword = password + doc.user.substring(0,3);
-                }
-                if(doc.password === md5(saltedPassword)){
-                    req.session.user = doc.user;
-                    doc.password = "";
-                    req.session.userDoc = doc;
-                    users.updateOne({"_id":doc._id}, {"$set":{"lastlogin":Date.now(),"failedTries":0}});
-                    res.status(200).json({"ok":true});
-                }else{
-                    req.session.user = "";
-                    req.session.userDoc = {};
-                    users.updateOne({"_id":doc._id}, {"$ic":{"failedTries":1}});
                     res.status(401).json({"error":"Log In Failed"});
                 }
             }
         });
-
     });
 
     router.get('/logout', function(req, res){
